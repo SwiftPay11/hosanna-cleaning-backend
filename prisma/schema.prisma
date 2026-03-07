@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  phone     String
+  password  String
+  role      Role     @default(USER)
+
+  addresses Address[]
+  orders    Order[]
+
+  createdAt DateTime @default(now())
+}
+
+model Address {
+  id       String @id @default(uuid())
+  userId   String
+  label    String
+  location String
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Service {
+  id          String  @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  active      Boolean @default(true)
+
+  orderItems OrderItem[]
+
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  status    OrderStatus @default(PENDING)
+  total     Float
+
+  user    User        @relation(fields: [userId], references: [id])
+  items   OrderItem[]
+  history OrderStatusHistory[]
+  payment Payment?
+
+  address      String?
+  scheduleDate String?
+  explanation  String?
+
+
+  createdAt DateTime @default(now())
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   String
+  serviceId String
+  quantity  Int
+
+  order   Order   @relation(fields: [orderId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+}
+
+model OrderStatusHistory {
+  id        String       @id @default(uuid())
+  orderId   String
+  status    OrderStatus
+  changedBy String
+  createdAt DateTime     @default(now())
+
+  order     Order        @relation(fields: [orderId], references: [id])
+}
+
+model Payment {
+  id      String        @id @default(uuid())
+  orderId String        @unique
+  amount  Float
+  status  PaymentStatus
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+  STAFF
+}
+
+enum OrderStatus {
+  PENDING
+  PICKED_UP
+  CLEANING
+  READY
+  DELIVERED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
