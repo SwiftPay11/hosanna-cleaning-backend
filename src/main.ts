@@ -6,10 +6,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // ✅ ENABLE CORS
-  app.enableCors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  });
+ app.enableCors({
+  origin: [
+    "http://localhost:3000",
+    "https://cleaning-frontend.netlify.app",
+  ],
+  credentials: true,
+});
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -18,6 +21,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3003);
+  await app.listen(process.env.PORT || 3003);
 }
 bootstrap();
