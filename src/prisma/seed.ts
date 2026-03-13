@@ -57,7 +57,8 @@ async function main() {
         description: "Outdoor cleaning services",
         price: 6000,
       }
-    ] 
+    ],
+    skipDuplicates: true,
   });
 
   console.log("Services seeded successfully");
