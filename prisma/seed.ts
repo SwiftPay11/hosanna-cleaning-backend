@@ -1,9 +1,30 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 async function main() {
 
+  // Create admin account
+  const hashedPassword = await bcrypt.hash("Hosanna@90", 10);
+
+  await prisma.user.upsert({
+    where: { email: "info@hosannaglobal.com" },
+    update: {},
+    create: {
+      firstName: "Hosanna_Admin",
+      lastName: "Ogar",
+      email: "info@hosannaglobal.com",
+      phone: "0000000000",
+      password: hashedPassword,
+      role: "ADMIN",
+    },
+  });
+
+  console.log("Admin account seeded");
+
+
+  // Seed services (your existing code)
   await prisma.service.createMany({
     data: [
       {
@@ -40,7 +61,6 @@ async function main() {
   });
 
   console.log("Services seeded successfully");
-
 }
 
 main()
