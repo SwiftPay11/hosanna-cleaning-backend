@@ -30,32 +30,32 @@ async function main() {
       {
         name: "Domestic / Residential Cleaning",
         description: "Cleaning for houses and apartments",
-        price: 5000,
+        price: 13,
       },
       {
         name: "Office / Commercial Cleaning",
         description: "Cleaning for offices and commercial spaces",
-        price: 8000,
+        price: 13,
       },
       {
         name: "Airbnb & Rental Cleaning",
         description: "Cleaning for Airbnb and rental properties",
-        price: 7000,
+        price: 13,
       },
       {
         name: "Move-In / Move-Out Cleaning",
         description: "Deep cleaning when moving in or out",
-        price: 9000,
+        price: 13,
       },
       {
         name: "End of Tenancy Cleaning",
         description: "Complete cleaning before tenancy ends",
-        price: 10000,
+        price: 13,
       },
       {
         name: "Backyard & Street Cleaning",
         description: "Outdoor cleaning services",
-        price: 6000,
+        price: 13,
       }
     ],
     skipDuplicates: true,
