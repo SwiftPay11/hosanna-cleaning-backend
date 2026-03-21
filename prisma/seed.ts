@@ -25,6 +25,8 @@ async function main() {
 
 
   // Seed services (your existing code)
+  await prisma.$executeRawUnsafe(`TRUNCATE TABLE "OrderItem", "Order", "Service", "User" CASCADE;`);
+  await prisma.$executeRawUnsafe(`DELETE FROM "_prisma_migrations";`);
 
   await prisma.service.createMany({
     data: [
