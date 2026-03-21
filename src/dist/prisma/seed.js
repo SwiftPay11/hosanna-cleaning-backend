@@ -18,8 +18,6 @@ async function main() {
         },
     });
     console.log("Admin account seeded");
-    await prisma.$executeRawUnsafe(`TRUNCATE TABLE "OrderItem", "Order", "Service", "User" CASCADE;`);
-    await prisma.$executeRawUnsafe(`DELETE FROM "_prisma_migrations";`);
     await prisma.service.createMany({
         data: [
             {
