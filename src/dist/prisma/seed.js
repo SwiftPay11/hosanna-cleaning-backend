@@ -18,7 +18,6 @@ async function main() {
         },
     });
     console.log("Admin account seeded");
-    await prisma.service.deleteMany();
     await prisma.service.createMany({
         data: [
             {
