@@ -25,6 +25,7 @@ async function main() {
 
 
   // Seed services (your existing code)
+
   await prisma.service.createMany({
     data: [
       {
