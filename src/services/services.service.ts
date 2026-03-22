@@ -12,9 +12,7 @@ export class ServicesService {
   }
 
   findAll() {
-    return this.prisma.service.findMany({
-      where: { active: true },
-    });
+    return this.prisma.service.findMany();
   }
 
   findOne(id: string) {

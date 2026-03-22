@@ -21,9 +21,7 @@ let ServicesService = class ServicesService {
         return this.prisma.service.create({ data });
     }
     findAll() {
-        return this.prisma.service.findMany({
-            where: { active: true },
-        });
+        return this.prisma.service.findMany();
     }
     findOne(id) {
         return this.prisma.service.findUnique({
