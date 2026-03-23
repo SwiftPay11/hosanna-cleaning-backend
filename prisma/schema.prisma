@@ -90,6 +90,14 @@ model Payment {
   order Order @relation(fields: [orderId], references: [id])
 }
 
+model Review {
+  id        String   @id @default(uuid())
+  name      String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+}
+
 enum Role {
   USER
   ADMIN
