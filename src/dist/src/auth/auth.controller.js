@@ -29,8 +29,12 @@ let AuthController = class AuthController {
     register(body) {
         return this.authService.register(body);
     }
-    login(body) {
-        return this.authService.login(body.email, body.password);
+    login(req, body) {
+        const ip = req.headers['x-forwarded-for']?.split(',')[0] ||
+            req.socket?.remoteAddress ||
+            'Unknown';
+        const device = req.headers['user-agent'] || 'Unknown';
+        return this.authService.login(body.email, body.password, ip, device);
     }
 };
 exports.AuthController = AuthController;
@@ -51,9 +55,10 @@ __decorate([
 ], AuthController.prototype, "register", null);
 __decorate([
     (0, common_1.Post)('login'),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_1.LoginDto]),
+    __metadata("design:paramtypes", [Object, login_dto_1.LoginDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
 exports.AuthController = AuthController = __decorate([

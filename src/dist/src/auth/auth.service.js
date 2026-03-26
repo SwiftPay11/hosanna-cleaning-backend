@@ -40,8 +40,63 @@ let AuthService = class AuthService {
                     role: client_2.Role.USER,
                 },
             });
-            await this.emailService.sendMail(user.email, "Welcome to Hosanna Cleaning 🎉", `<h2>Welcome ${user.firstName}</h2>
-   <p>Your account has been created successfully.</p>`);
+            try {
+                await this.emailService.sendMail(user.email, "🎉 Welcome to Hosanna Global", `
+    <div style="background:#0f0f0f; padding:20px; font-family:Arial, sans-serif; color:#ffffff;">
+      
+      <div style="max-width:600px; margin:auto; background:#1a120d; border-radius:12px; padding:25px; border:1px solid #3a2a21;">
+        
+        <h2 style="margin-bottom:10px;">🎉 Welcome to Hosanna Global</h2>
+
+        <p style="color:#ccc;">
+          Hello <strong>${user.firstName}</strong>,
+        </p>
+
+        <p style="color:#ccc;">
+          Your account has been created successfully, and you’re now part of Hosanna Global Cleaning Services.
+        </p>
+
+        <p style="color:#ccc;">
+          You can now book cleaning services, manage your orders, and enjoy a seamless experience with us.
+        </p>
+
+        <div style="margin:30px 0; text-align:center;">
+          <a 
+            href="https://hosannaglobal.co.uk" 
+            target="_blank"
+            style="
+              display:inline-block;
+              background:#6b3e26;
+              color:#ffffff;
+              padding:12px 20px;
+              border-radius:8px;
+              text-decoration:none;
+              font-weight:bold;
+            "
+          >
+            Visit Website
+          </a>
+        </div>
+
+        <p style="color:#ccc;">
+          If you have any questions, feel free to reach out to us anytime.
+        </p>
+
+        <hr style="border:none; border-top:1px solid #3a2a21; margin:20px 0;" />
+
+        <p style="font-size:12px; color:#888;">
+          Hosanna Global Cleaning Services<br/>
+          Delivering excellence, one clean at a time ✨
+        </p>
+
+      </div>
+
+    </div>
+    `);
+            }
+            catch (err) {
+                console.error("Signup email failed:", err);
+            }
             return { message: 'User created', user };
         }
         catch (error) {
@@ -64,7 +119,7 @@ let AuthService = class AuthService {
             },
         });
     }
-    async login(email, password) {
+    async login(email, password, ip, device) {
         const user = await this.prisma.user.findUnique({
             where: { email },
         });
@@ -77,7 +132,48 @@ let AuthService = class AuthService {
             sub: user.id,
             role: user.role,
         });
-        await this.emailService.sendMail(user.email, "Login Alert", `<p>Hello ${user.firstName}, you just logged in.</p>`);
+        await this.emailService.sendMail(user.email, "🔐 Login Alert - Hosanna Global", `
+  <div style="background:#0f0f0f; padding:20px; font-family:Arial, sans-serif; color:#ffffff;">
+    
+    <div style="max-width:600px; margin:auto; background:#1a120d; border-radius:12px; padding:25px; border:1px solid #3a2a21;">
+      
+      <h2 style="margin-bottom:10px;">🔐 Login Alert</h2>
+
+      <p style="color:#ccc;">
+        Hello <strong>${user.firstName}</strong>,
+      </p>
+
+      <p style="color:#ccc;">
+        We detected a new login to your account.
+      </p>
+
+      <div style="background:#2b1d16; padding:15px; border-radius:10px; margin:20px 0;">
+        
+        <p><strong>📍 IP Address:</strong> ${ip}</p>
+        <p><strong>💻 Device:</strong> ${device}</p>
+        <p><strong>🕒 Time:</strong> ${new Date().toLocaleString()}</p>
+
+      </div>
+
+      <p style="color:#ccc;">
+        If this was you, you can safely ignore this email.
+      </p>
+
+      <p style="color:#ff4d4f;">
+        If you do NOT recognize this activity, please secure your account immediately.
+      </p>
+
+      <hr style="border:none; border-top:1px solid #3a2a21; margin:20px 0;" />
+
+      <p style="font-size:12px; color:#888;">
+        Hosanna Global Cleaning Services<br/>
+        Keeping your account safe 🔒
+      </p>
+
+    </div>
+
+  </div>
+  `);
         return { access_token: token };
     }
 };

@@ -20,7 +20,19 @@ getMe(@Req() req) {
   }
 
   @Post('login')
-  login(@Body() body: LoginDto) {
-    return this.authService.login(body.email, body.password);
+  login(@Req() req, @Body() body: LoginDto) {
+    const ip =
+    req.headers['x-forwarded-for']?.split(',')[0] ||
+    req.socket?.remoteAddress ||
+    'Unknown';
+
+  const device = req.headers['user-agent'] || 'Unknown';
+
+  return this.authService.login(
+    body.email,
+    body.password,
+    ip,
+    device,
+  );
   }
 }

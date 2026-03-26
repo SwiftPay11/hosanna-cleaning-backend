@@ -11,13 +11,13 @@ export declare class OrdersService {
     create(userId: string, dto: CreateOrderDto): Promise<{
         user: {
             id: string;
-            createdAt: Date;
+            email: string;
             firstName: string;
             lastName: string;
-            email: string;
             phone: string;
             password: string;
             role: import(".prisma/client").$Enums.Role;
+            createdAt: Date;
         };
         items: ({
             service: {
@@ -29,30 +29,30 @@ export declare class OrdersService {
             };
         } & {
             id: string;
-            quantity: number;
             serviceId: string;
+            quantity: number;
             orderId: string;
         })[];
     } & {
-        address: string | null;
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        total: number;
+        createdAt: Date;
+        address: string | null;
         scheduleDate: string | null;
         explanation: string | null;
-        createdAt: Date;
         userId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
+        total: number;
     }>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<({
         user: {
             id: string;
-            createdAt: Date;
+            email: string;
             firstName: string;
             lastName: string;
-            email: string;
             phone: string;
             password: string;
             role: import(".prisma/client").$Enums.Role;
+            createdAt: Date;
         };
         items: ({
             service: {
@@ -64,86 +64,86 @@ export declare class OrdersService {
             };
         } & {
             id: string;
-            quantity: number;
             serviceId: string;
+            quantity: number;
             orderId: string;
         })[];
     } & {
-        address: string | null;
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        total: number;
+        createdAt: Date;
+        address: string | null;
         scheduleDate: string | null;
         explanation: string | null;
-        createdAt: Date;
         userId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
+        total: number;
     })[]>;
     findUserOrders(userId: string): import(".prisma/client").Prisma.PrismaPromise<({
         items: {
             id: string;
-            quantity: number;
             serviceId: string;
+            quantity: number;
             orderId: string;
         }[];
     } & {
-        address: string | null;
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        total: number;
+        createdAt: Date;
+        address: string | null;
         scheduleDate: string | null;
         explanation: string | null;
-        createdAt: Date;
         userId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
+        total: number;
     })[]>;
     updateStatus(id: string, status: OrderStatus, adminId: string): Promise<{
         user: {
             id: string;
-            createdAt: Date;
+            email: string;
             firstName: string;
             lastName: string;
-            email: string;
             phone: string;
             password: string;
             role: import(".prisma/client").$Enums.Role;
+            createdAt: Date;
         };
         items: {
             id: string;
-            quantity: number;
             serviceId: string;
+            quantity: number;
             orderId: string;
         }[];
     } & {
-        address: string | null;
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        total: number;
+        createdAt: Date;
+        address: string | null;
         scheduleDate: string | null;
         explanation: string | null;
-        createdAt: Date;
         userId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
+        total: number;
     }>;
     getOrderWithHistory(id: string): Promise<({
         items: {
             id: string;
-            quantity: number;
             serviceId: string;
+            quantity: number;
             orderId: string;
         }[];
         history: {
             id: string;
-            status: import(".prisma/client").$Enums.OrderStatus;
             createdAt: Date;
-            orderId: string;
+            status: import(".prisma/client").$Enums.OrderStatus;
             changedBy: string;
+            orderId: string;
         }[];
     } & {
-        address: string | null;
         id: string;
-        status: import(".prisma/client").$Enums.OrderStatus;
-        total: number;
+        createdAt: Date;
+        address: string | null;
         scheduleDate: string | null;
         explanation: string | null;
-        createdAt: Date;
         userId: string;
+        status: import(".prisma/client").$Enums.OrderStatus;
+        total: number;
     }) | null>;
 }

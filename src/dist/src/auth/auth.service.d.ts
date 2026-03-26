@@ -11,23 +11,23 @@ export declare class AuthService {
         message: string;
         user: {
             id: string;
-            createdAt: Date;
+            email: string;
             firstName: string;
             lastName: string;
-            email: string;
             phone: string;
             password: string;
             role: import(".prisma/client").$Enums.Role;
+            createdAt: Date;
         };
     }>;
     getMe(userId: string): Promise<{
         id: string;
+        email: string;
         firstName: string;
         lastName: string;
-        email: string;
         role: import(".prisma/client").$Enums.Role;
     } | null>;
-    login(email: string, password: string): Promise<{
+    login(email: string, password: string, ip: string, device: string): Promise<{
         access_token: string;
     }>;
 }
