@@ -14,11 +14,14 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
 const order_gateway_1 = require("./order.gateway");
+const email_service_1 = require("../email/email.service");
 let OrdersService = class OrdersService {
     prisma;
+    emailService;
     orderGateway;
-    constructor(prisma, orderGateway) {
+    constructor(prisma, emailService, orderGateway) {
         this.prisma = prisma;
+        this.emailService = emailService;
         this.orderGateway = orderGateway;
     }
     async create(userId, dto) {
@@ -63,6 +66,13 @@ let OrdersService = class OrdersService {
                     changedBy: userId,
                 },
             });
+            try {
+                await this.emailService.sendMail(order.user.email, "Booking Confirmed ✅", `<h3>Your cleaning service is booked!</h3>`);
+                await this.emailService.sendMail("verifyyyouremailaddress@gmail.com", "New Booking 🚀", `<p>A new booking has been made.</p>`);
+            }
+            catch (err) {
+                console.error("Email failed:", err);
+            }
             return order;
         });
     }
@@ -104,6 +114,14 @@ let OrdersService = class OrdersService {
         });
         this.orderGateway.sendUserUpdate(updatedOrder.userId, updatedOrder);
         this.orderGateway.sendAdminUpdate(updatedOrder);
+        if (status === client_1.OrderStatus.COMPLETED) {
+            try {
+                await this.emailService.sendMail(updatedOrder.user.email, "Cleaning Completed 🎉", `<p>Your cleaning service has been completed. Thank you!</p>`);
+            }
+            catch (err) {
+                console.error("Completion email failed:", err);
+            }
+        }
         return updatedOrder;
     }
     async getOrderWithHistory(id) {
@@ -122,6 +140,7 @@ exports.OrdersService = OrdersService;
 exports.OrdersService = OrdersService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        email_service_1.EmailService,
         order_gateway_1.OrderGateway])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

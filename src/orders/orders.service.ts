@@ -3,11 +3,13 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from '@prisma/client';
 import { OrderGateway } from './order.gateway';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     private prisma: PrismaService,
+    private emailService: EmailService,
     private readonly orderGateway: OrderGateway,
   ) {}
 
@@ -39,47 +41,66 @@ export class OrdersService {
           scheduleDate: dto.scheduleDate || null,
           explanation: dto.explanation || null,
 
-    items: {
-      create: dto.items.map(item => ({
-        serviceId: item.serviceId,
-        quantity: item.quantity,
-      })),
-    },
-  },
-  include: {
-    items: {
-      include: {
-        service: true,
-      },
-    },
-    user: true,
-  },
-});
+          items: {
+            create: dto.items.map(item => ({
+              serviceId: item.serviceId,
+              quantity: item.quantity,
+            })),
+          },
+        },
+        include: {
+          items: {
+            include: {
+              service: true,
+            },
+          },
+          user: true,
+        },
+      });
 
-  await tx.orderStatusHistory.create({
-    data: {
-      orderId: order.id,
-      status: OrderStatus.PENDING,
-      changedBy: userId,
-    },
-  });
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: order.id,
+          status: OrderStatus.PENDING,
+          changedBy: userId,
+        },
+      });
 
-  return order;
-});
+      // ✅ SEND EMAILS (SAFE - WON'T BREAK ORDER)
+      try {
+        // User email
+        await this.emailService.sendMail(
+          order.user.email,
+          "Booking Confirmed ✅",
+          `<h3>Your cleaning service is booked!</h3>`
+        );
+
+        // Admin email
+        await this.emailService.sendMail(
+          "verifyyyouremailaddress@gmail.com",
+          "New Booking 🚀",
+          `<p>A new booking has been made.</p>`
+        );
+      } catch (err) {
+        console.error("Email failed:", err);
+      }
+
+      return order;
+    });
   }
 
   findAll() {
-  return this.prisma.order.findMany({
-    include: {
-      user: true,
-      items: {
-        include: {
-          service: true,
+    return this.prisma.order.findMany({
+      include: {
+        user: true,
+        items: {
+          include: {
+            service: true,
+          },
         },
       },
-    },
-  });
-}
+    });
+  }
 
   findUserOrders(userId: string) {
     return this.prisma.order.findMany({
@@ -91,35 +112,48 @@ export class OrdersService {
   }
 
   async updateStatus(
-  id: string,
-  status: OrderStatus,
-  adminId: string,
-) {
-const updatedOrder = await this.prisma.order.update({
-  where: { id },
-  data: { status },
-  include: {
-    user: true,
-    items: true,
-  },
-});
+    id: string,
+    status: OrderStatus,
+    adminId: string,
+  ) {
+    const updatedOrder = await this.prisma.order.update({
+      where: { id },
+      data: { status },
+      include: {
+        user: true,
+        items: true,
+      },
+    });
 
-  await this.prisma.orderStatusHistory.create({
-    data: {
-      orderId: id,
-      status,
-      changedBy: adminId,
-    },
-  });
+    await this.prisma.orderStatusHistory.create({
+      data: {
+        orderId: id,
+        status,
+        changedBy: adminId,
+      },
+    });
 
-  // notify the specific user
-this.orderGateway.sendUserUpdate(updatedOrder.userId, updatedOrder);
+    // notify the specific user
+    this.orderGateway.sendUserUpdate(updatedOrder.userId, updatedOrder);
 
-// notify admins
-this.orderGateway.sendAdminUpdate(updatedOrder);
+    // notify admins
+    this.orderGateway.sendAdminUpdate(updatedOrder);
 
-  return updatedOrder;
-}
+    // ✅ SEND COMPLETION EMAIL
+    if (status === OrderStatus.COMPLETED) {
+      try {
+        await this.emailService.sendMail(
+          updatedOrder.user.email,
+          "Cleaning Completed 🎉",
+          `<p>Your cleaning service has been completed. Thank you!</p>`,
+        );
+      } catch (err) {
+        console.error("Completion email failed:", err);
+      }
+    }
+
+    return updatedOrder;
+  }
 
   async getOrderWithHistory(id: string) {
     return this.prisma.order.findUnique({

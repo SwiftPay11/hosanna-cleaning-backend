@@ -17,11 +17,14 @@ const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require("@prisma/client");
 const common_2 = require("@nestjs/common");
 const client_2 = require("@prisma/client");
+const email_service_1 = require("../email/email.service");
 let AuthService = class AuthService {
     prisma;
+    emailService;
     jwtService;
-    constructor(prisma, jwtService) {
+    constructor(prisma, emailService, jwtService) {
         this.prisma = prisma;
+        this.emailService = emailService;
         this.jwtService = jwtService;
     }
     async register(data) {
@@ -37,6 +40,8 @@ let AuthService = class AuthService {
                     role: client_2.Role.USER,
                 },
             });
+            await this.emailService.sendMail(user.email, "Welcome to Hosanna Cleaning 🎉", `<h2>Welcome ${user.firstName}</h2>
+   <p>Your account has been created successfully.</p>`);
             return { message: 'User created', user };
         }
         catch (error) {
@@ -72,6 +77,7 @@ let AuthService = class AuthService {
             sub: user.id,
             role: user.role,
         });
+        await this.emailService.sendMail(user.email, "Login Alert", `<p>Hello ${user.firstName}, you just logged in.</p>`);
         return { access_token: token };
     }
 };
@@ -79,6 +85,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        email_service_1.EmailService,
         jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

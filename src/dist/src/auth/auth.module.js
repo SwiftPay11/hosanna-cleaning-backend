@@ -13,12 +13,14 @@ const auth_controller_1 = require("./auth.controller");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const jwt_strategy_1 = require("./jwt.strategy/jwt.strategy");
+const email_module_1 = require("../email/email.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            email_module_1.EmailModule,
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             jwt_1.JwtModule.registerAsync({
                 inject: [config_1.ConfigService],
