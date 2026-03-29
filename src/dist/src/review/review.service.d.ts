@@ -9,14 +9,14 @@ export declare class ReviewService {
     }): import(".prisma/client").Prisma.Prisma__ReviewClient<{
         id: string;
         createdAt: Date;
-        name: string;
+        name: string | null;
         rating: number;
         comment: string;
     }, never, import("@prisma/client/runtime/library").DefaultArgs>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<{
         id: string;
         createdAt: Date;
-        name: string;
+        name: string | null;
         rating: number;
         comment: string;
     }[]>;
